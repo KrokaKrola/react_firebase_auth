@@ -2,11 +2,11 @@ import React, { useContext, createContext, useReducer } from "react";
 
 const Context = createContext();
 
-export function useAppContext() {
+export function useAppState() {
   return useContext(Context);
 }
 
-export default function AppStateProvider({ reducer, inititalValue = {}, children }) {
-  const value = useReducer(reducer, inititalValue);
+export default function AppStateProvider({ reducer, initialState = {}, children }) {
+  const value = useReducer(reducer, initialState);
   return <Context.Provider value={value} children={children} />;
 }
