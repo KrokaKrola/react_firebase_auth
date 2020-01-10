@@ -1,4 +1,4 @@
-export const initialState = { authAttempted: false, auth: null, user: null };
+export const initialState = { authAttempted: false, auth: null, user: null, loggLoading: true };
 
 export const appStateReducer = (state, action) => {
   switch (action.type) {
@@ -6,7 +6,8 @@ export const appStateReducer = (state, action) => {
       return {
         ...state,
         auth: action.auth,
-        authAttempted: true
+        authAttempted: true,
+        loggLoading: false
       };
     default:
       return state;

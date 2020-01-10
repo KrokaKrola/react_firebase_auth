@@ -6,11 +6,12 @@ import LoggedOut from './LoggedOut';
 import LoggedIn from './LoggedIn';
 
 function App() {
-  // const [{user}] = useAppState();
+  
   const auth = useAuth();
+  console.log(auth);
   return <div>
     {
-      auth ? <LoggedIn /> : <LoggedOut />
+      auth ? <LoggedIn displayName={auth.displayName} /> : <LoggedOut />
     }
   </div>;
 }

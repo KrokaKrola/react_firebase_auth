@@ -1,18 +1,15 @@
 import React from 'react';
-import { useAppState } from './app-state';
 import { Button } from 'react-bootstrap';
 import { logout } from './firebase';
 
-function Main() {
-  const [{ auth }] = useAppState();
-
+function Main({displayName}) {
   function logoutHandler() {
     logout();
   }
 
   return (
     <main>
-      main section of logged {auth.displayName}{' '}
+      main section of logged {displayName}{' '}
       <Button onClick={logoutHandler}>logout</Button>
     </main>
   );

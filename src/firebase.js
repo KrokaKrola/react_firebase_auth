@@ -25,19 +25,61 @@ export function googleAuthProvider() {
     });
 }
 
+export function createUserWithEmailAndPassword(data) {
+  return firebase
+    .auth()
+    .createUserWithEmailAndPassword(data.email, data.password)
+    .then(result => {
+      const {user} = result;
+      return user;
+    })
+    .catch(function(error) {
+      // Handle Errors here.
+      console.error(`Code: ${error.code}`, `Message: ${error.message}`);
+    });
+}
+
+export function signInWithEmailAndPassword(data) {
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword(data.email, data.password)
+    .catch(function(error) {
+      console.error(`Code: ${error.code}`, `Message: ${error.message}`);
+    });
+}
+
 export function logout() {
-  firebase.auth().signOut().then(function() {
-    // Sign-out successful.
-  }).catch(function(error) {
-    // An error happened.
-  });
+  firebase
+    .auth()
+    .signOut()
+    .catch(function(error) {
+      console.error(error);
+    });
 }
 
 export function onAuthStateChanged(callback) {
   return firebase.auth().onAuthStateChanged(function(auth) {
-    callback(auth)
+    callback(auth);
   });
 }
 
+export function setUser(data) {
+  const document = db.doc(`/users/${data.uid}`);
+  document.get().then(doc => {
+    if (!doc.exists) {
+      document.set({ data }, { merge: true });
+      console.log('set user into db');
+    }
+  });
+}
+
+export function getUser(uid) {
+  return db.doc(`/users/${uid}`).get().then(doc => {
+    if(doc.exists) {
+      console.log(doc.data());
+      return doc.data();
+    }
+  })
+}
 
 export const db = firebase.firestore();
