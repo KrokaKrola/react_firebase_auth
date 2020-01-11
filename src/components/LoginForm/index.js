@@ -1,7 +1,6 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
-// import googleSvg from './assets/google.svg';
-import { signInWithEmailAndPassword } from './../../firebase';
+import { signInWithEmailAndPassword } from './../../utils';
 
 export default function LoginForm() {
 
@@ -40,8 +39,8 @@ function emailPaswordLoginHandler(event) {
   event.preventDefault();
   const formElements = event.target.elements;
   const data = {
-    email_login: formElements.email_login.value,
-    password_login: formElements.password_login.value
+    email: formElements.email_login.value,
+    password: formElements.password_login.value
   };
   signInWithEmailAndPassword(data);
 }

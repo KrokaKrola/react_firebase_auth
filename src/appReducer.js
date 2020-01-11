@@ -1,8 +1,7 @@
 export const initialState = {
   authAttempted: false,
   auth: null,
-  user: null,
-  loggLoading: true
+  user: null
 };
 
 export const appStateReducer = (state, action) => {
@@ -11,8 +10,7 @@ export const appStateReducer = (state, action) => {
       return {
         ...state,
         authAttempted: true,
-        loggLoading: false,
-        ...action.test
+        ...action.authState
       };
     case 'LOAD_USER':
       return {

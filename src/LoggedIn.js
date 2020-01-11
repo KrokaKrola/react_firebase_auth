@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { logout, getUser } from './firebase';
+import { logout, getDoc } from './utils';
 import { useAppState } from './app-state';
 
 function LoggedIn() {
   const [{ auth, user }, dispatch] = useAppState();
 
-  function logoutHandler() {
-    logout();
-  }
-
   useEffect(() => {
     if (!user) {
-      getUser(auth.uid).then(user => {
+      getDoc(`/users/${auth.uid}`).then(user => {
         dispatch({ type: 'LOAD_USER', user: user });
       });
     }
@@ -21,7 +17,7 @@ function LoggedIn() {
   return user ? (
     <>
       main section of logged {user.data.displayName}{' '}
-      <Button onClick={logoutHandler}>logout</Button>
+      <Button onClick={logout}>logout</Button>
     </>
   ) : null;
 }

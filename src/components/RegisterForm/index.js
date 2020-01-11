@@ -1,33 +1,9 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import googleSvg from './../../assets/google.svg';
-import { googleAuthProvider, createUserWithEmailAndPassword, setUser} from './../../firebase';
-import { useAppState } from './../../app-state';
+import {createUserWithEmailAndPassword, setDoc} from './../../utils';
+import GoogleAuthButton from './components/GoogleAuthButton';
 
 export default function LoginForm() {
-  // const [, dispatch] = useAppState();
-
-  async function googleAuthHandler() {
-    const { user: userObject } = await googleAuthProvider();
-    const { displayName, email, uid, photoURL } = userObject;
-    setUser({displayName, email, uid, photoURL})
-  }
-
-  async function emailPaswordRegisterHandler(event) {
-    event.preventDefault();
-    const formElements = event.target.elements;
-    const data = {
-      displayName: formElements.name.value,
-      email: formElements.email_register.value,
-      password: formElements.password_register.value
-    }
-    const userObject = await createUserWithEmailAndPassword(data);
-    setUser({
-      ...data,
-      uid: userObject.uid
-    });
-  }
-
   return (
     <form onSubmit={emailPaswordRegisterHandler}>
       <div>
@@ -63,12 +39,26 @@ export default function LoginForm() {
           />
         </InputGroup>
       </div>
-      <Button onClick={googleAuthHandler} variant="outline-light">
-        <img style={{ width: 20 }} src={googleSvg} alt="" />
-      </Button>
+      <GoogleAuthButton />
       <Button type="submit" variant="primary">
         Register
       </Button>
     </form>
   );
+}
+
+async function emailPaswordRegisterHandler(event) {
+  event.preventDefault();
+  const formElements = event.target.elements;
+  const data = {
+    displayName: formElements.name.value,
+    email: formElements.email_register.value,
+    password: formElements.password_register.value
+  }
+  const userObject = await createUserWithEmailAndPassword(data);
+  setDoc(`/users/${userObject.uid}`, {
+    displayName: data.displayName,
+    email: data.email,
+    uid: userObject.uid
+  });
 }
