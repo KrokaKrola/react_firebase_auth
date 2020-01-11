@@ -31,6 +31,10 @@ export function createUserWithEmailAndPassword(data) {
     .createUserWithEmailAndPassword(data.email, data.password)
     .then(result => {
       const {user} = result;
+      user.updateProfile({
+        displayName: data.displayName,
+        photoURL: data.photoURL
+      })
       return user;
     })
     .catch(function(error) {
@@ -76,7 +80,6 @@ export function setUser(data) {
 export function getUser(uid) {
   return db.doc(`/users/${uid}`).get().then(doc => {
     if(doc.exists) {
-      console.log(doc.data());
       return doc.data();
     }
   })

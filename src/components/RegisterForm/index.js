@@ -9,12 +9,8 @@ export default function LoginForm() {
 
   async function googleAuthHandler() {
     const { user: userObject } = await googleAuthProvider();
-    // const { displayName, email, uid, photoURL } = userObject;
-    // dispatch({
-    //   type: 'CHANGE_AUTH_STATE',
-    //   auth: { displayName, email, uid, photoURL }
-    // });
-    setUser(userObject)
+    const { displayName, email, uid, photoURL } = userObject;
+    setUser({displayName, email, uid, photoURL})
   }
 
   async function emailPaswordRegisterHandler(event) {

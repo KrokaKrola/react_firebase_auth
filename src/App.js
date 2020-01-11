@@ -6,14 +6,9 @@ import LoggedOut from './LoggedOut';
 import LoggedIn from './LoggedIn';
 
 function App() {
-  
-  const auth = useAuth();
-  console.log(auth);
-  return <div>
-    {
-      auth ? <LoggedIn displayName={auth.displayName} /> : <LoggedOut />
-    }
-  </div>;
+  const { auth, authAttempted } = useAuth();
+  if (!authAttempted) return null;
+  return <div>{auth ? <LoggedIn /> : <LoggedOut />}</div>;
 }
 
 export default () => {

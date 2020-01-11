@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { logout } from './firebase';
+import { logout, getUser } from './firebase';
+import { useAppState } from './app-state';
 
-function Main({displayName}) {
+function LoggedIn() {
+  const [{ auth, user }, dispatch] = useAppState();
+
   function logoutHandler() {
     logout();
   }
 
-  return (
-    <main>
-      main section of logged {displayName}{' '}
+  useEffect(() => {
+    if (!user) {
+      getUser(auth.uid).then(user => {
+        dispatch({ type: 'LOAD_USER', user: user });
+      });
+    }
+  }, [user, auth.uid, dispatch]);
+  
+  return user ? (
+    <>
+      main section of logged {user.data.displayName}{' '}
       <Button onClick={logoutHandler}>logout</Button>
-    </main>
-  );
+    </>
+  ) : null;
 }
 
-export default Main;
+export default LoggedIn;

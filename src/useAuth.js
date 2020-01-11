@@ -1,29 +1,33 @@
 import { useEffect } from 'react';
 import { useAppState } from './app-state';
-import { onAuthStateChanged, getUser} from './firebase';
+import { onAuthStateChanged } from './firebase';
 
 export default function useAuth() {
-  const [{ auth }, dispatch] = useAppState();
+  const [{ auth, authAttempted }, dispatch] = useAppState();
 
   useEffect(() => {
     return onAuthStateChanged(auth => {
       if (auth) {
         const { displayName, email, uid, photoURL } = auth;
-        // const authObject = getUser(auth.uid);
-        // authObject.then(result => {
-          // });
-          dispatch({
-            type: 'CHANGE_AUTH_STATE',
-            auth: { displayName, email, uid, photoURL }
-        })
-      } else {
         dispatch({
           type: 'CHANGE_AUTH_STATE',
-          auth: null
+          test: {
+            auth: { displayName, email, uid, photoURL },
+            user: null
+          }
+        });
+      } else {
+        console.log('logout');
+        dispatch({
+          type: 'CHANGE_AUTH_STATE',
+          test: {
+            auth: null,
+            user: null
+          }
         });
       }
     });
   }, [dispatch]);
-  
-  return auth;
+
+  return { auth, authAttempted };
 }
