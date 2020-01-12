@@ -1,37 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
-import { signInWithEmailAndPassword } from "./../../utils";
+import { signInWithEmailAndPassword, setErrors } from "./../../utils";
 import { useAppState } from "../../app-state";
 
-export default function LoginForm() {
+const loadingStyle = {
+  pointerEvents: "none",
+  opacity: 0.5
+};
+
+const LoginForm = () => {
   const [{ errors }, dispatch] = useAppState();
+  const [loading, setLoading] = useState(false);
 
   async function emailPaswordLoginHandler(event) {
     event.preventDefault();
-    const formElements = event.target.elements;
-    const data = {
-      email: formElements.email_login.value,
-      password: formElements.password_login.value
-    };
-
+    setLoading(true);
+    const [email, password] = event.target.elements;
     try {
-      await signInWithEmailAndPassword(data);
-    } catch (error) {
-      const newErrors = [
-        ...errors,
-        {
-          message: error.message
-        }
-      ];
-      dispatch({
-        type: "CHANGE_ERRORS_STATE",
-        errors: newErrors
+      await signInWithEmailAndPassword({
+        email: email.value,
+        password: password.value
       });
+    } catch (error) {
+      setLoading(false);
+      setErrors(errors, dispatch, error);
     }
   }
 
   return (
-    <form onSubmit={emailPaswordLoginHandler}>
+    <form
+      style={loading ? loadingStyle : {}}
+      onSubmit={emailPaswordLoginHandler}
+    >
       <div>
         <label htmlFor="email_login">Email</label>
         <InputGroup>
@@ -60,3 +60,5 @@ export default function LoginForm() {
     </form>
   );
 }
+
+export default LoginForm;

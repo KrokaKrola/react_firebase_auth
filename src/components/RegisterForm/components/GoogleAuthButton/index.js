@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { googleAuthProvider } from "../../../../firebase";
-import { setDoc } from "../../../../utils";
+import { setErrors } from "../../../../utils";
 import googleSvg from "../../../../assets/google.svg";
 import { useAppState } from "../../../../app-state";
 
@@ -11,20 +11,10 @@ const GoogleAuthButton = ({ setLoading }) => {
   const googleAuthHandler = async () => {
     setLoading(true);
     try {
-      const { displayName, email, uid, photoURL } = await googleAuthProvider();
-      setDoc(`/users/${uid}`, { displayName, email, uid, photoURL });
+      await googleAuthProvider();
     } catch (error) {
       setLoading(false);
-      const newErrors = [
-        ...errors,
-        {
-          message: error.message
-        }
-      ];
-      dispatch({
-        type: "CHANGE_ERRORS_STATE",
-        errors: newErrors
-      });
+      setErrors(errors, dispatch, error);
     }
   };
 

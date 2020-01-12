@@ -2,13 +2,10 @@ import React from 'react';
 import { Container, Tabs, Col, Tab } from 'react-bootstrap';
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
-import { useAppState } from './app-state';
 
-function Login() {
-  const [{loggLoading}] = useAppState();
-
+const LoggedOut = () => {
   return (
-    <Container style={loggLoading ? {opacity: 0.5} : {}}>
+    <Container>
       <Col xs={{ span: 6, offset: 3 }}>
         <Tabs defaultActiveKey="register">
           <Tab title="Register" eventKey="register">
@@ -21,6 +18,6 @@ function Login() {
       </Col>
     </Container>
   );
-}
+};
 
-export default Login;
+export default LoggedOut;

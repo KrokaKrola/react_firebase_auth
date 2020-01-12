@@ -18,8 +18,18 @@ firebase.initializeApp(firebaseConfig);
 export async function googleAuthProvider() {
   const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    const result = await firebase.auth().signInWithPopup(provider);
-    return result;
+    const { user, additionalUserInfo } = await firebase
+      .auth()
+      .signInWithPopup(provider);
+    if (additionalUserInfo.isNewUser) {
+      await db.doc(`/users/${user.uid}`).set({
+        displayName: user.displayName,
+        email: user.email,
+        uid: user.uid,
+        photoURL: user.photoURL,
+        topScore: 0
+      });
+    }
   } catch (error) {
     throw new Error(error.message);
   }

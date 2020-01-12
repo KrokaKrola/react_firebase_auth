@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
-import { createUserWithEmailAndPassword } from "./../../utils";
+import { createUserWithEmailAndPassword, setErrors } from "./../../utils";
 import GoogleAuthButton from "./components/GoogleAuthButton";
 import { useAppState } from "../../app-state";
 
@@ -9,7 +9,7 @@ const loadingStyle = {
   opacity: 0.5
 };
 
-export default function RegisterForm() {
+const RegisterForm = () => {
   const [{ errors }, dispatch] = useAppState();
   const [loading, setLoading] = useState(false);
 
@@ -26,16 +26,7 @@ export default function RegisterForm() {
       await createUserWithEmailAndPassword(data);
     } catch (error) {
       setLoading(false);
-      const newErrors = [
-        ...errors,
-        {
-          message: error.message
-        }
-      ];
-      dispatch({
-        type: "CHANGE_ERRORS_STATE",
-        errors: newErrors
-      });
+      setErrors(errors, dispatch, error);
     }
   };
 
@@ -83,4 +74,6 @@ export default function RegisterForm() {
       </Button>
     </form>
   );
-}
+};
+
+export default RegisterForm;

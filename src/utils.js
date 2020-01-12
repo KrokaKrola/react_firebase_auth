@@ -18,7 +18,9 @@ export async function createUserWithEmailAndPassword({
     await db.doc(`/users/${user.uid}`).set({
       displayName: displayName,
       email: email,
-      uid: user.uid
+      uid: user.uid,
+      photoURL: photoURL,
+      topScore: 0
     });
   } catch (error) {
     // Handle Errors here.
@@ -68,4 +70,15 @@ export function uniqueId() {
       Math.round(performance.now())
     ).toString(36)
   );
+}
+
+export function setErrors(errors, fun, error) {
+  const newErrors = [
+    ...errors,
+    {message: error.message}
+  ];
+  fun({
+    type: "CHANGE_ERRORS_STATE",
+    errors: newErrors
+  })
 }
