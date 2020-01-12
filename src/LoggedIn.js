@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import { logout, getDoc } from './utils';
-import { useAppState } from './app-state';
+import React, { useEffect } from "react";
+import { Button } from "react-bootstrap";
+import { logout, getDoc } from "./utils";
+import { useAppState } from "./app-state";
 
 function LoggedIn() {
   const [{ auth, user }, dispatch] = useAppState();
@@ -9,14 +9,14 @@ function LoggedIn() {
   useEffect(() => {
     if (!user) {
       getDoc(`/users/${auth.uid}`).then(user => {
-        dispatch({ type: 'LOAD_USER', user: user });
+        dispatch({ type: "LOAD_USER", user: user });
       });
     }
   }, [user, auth.uid, dispatch]);
-  
+
   return user ? (
     <>
-      main section of logged {user.data.displayName}{' '}
+      main section of logged {user.displayName}{" "}
       <Button onClick={logout}>logout</Button>
     </>
   ) : null;

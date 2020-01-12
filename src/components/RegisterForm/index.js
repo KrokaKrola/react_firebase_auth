@@ -1,11 +1,49 @@
-import React from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import {createUserWithEmailAndPassword, setDoc} from './../../utils';
-import GoogleAuthButton from './components/GoogleAuthButton';
+import React, { useState } from "react";
+import { InputGroup, FormControl, Button } from "react-bootstrap";
+import { createUserWithEmailAndPassword } from "./../../utils";
+import GoogleAuthButton from "./components/GoogleAuthButton";
+import { useAppState } from "../../app-state";
 
-export default function LoginForm() {
+const loadingStyle = {
+  pointerEvents: "none",
+  opacity: 0.5
+};
+
+export default function RegisterForm() {
+  const [{ errors }, dispatch] = useAppState();
+  const [loading, setLoading] = useState(false);
+
+  const emailPaswordRegisterHandler = async event => {
+    event.preventDefault();
+    setLoading(true);
+    const [displayName, email, password] = event.target.elements;
+    const data = {
+      displayName: displayName.value,
+      email: email.value,
+      password: password.value
+    };
+    try {
+      await createUserWithEmailAndPassword(data);
+    } catch (error) {
+      setLoading(false);
+      const newErrors = [
+        ...errors,
+        {
+          message: error.message
+        }
+      ];
+      dispatch({
+        type: "CHANGE_ERRORS_STATE",
+        errors: newErrors
+      });
+    }
+  };
+
   return (
-    <form onSubmit={emailPaswordRegisterHandler}>
+    <form
+      style={loading ? loadingStyle : {}}
+      onSubmit={emailPaswordRegisterHandler}
+    >
       <div>
         <label htmlFor="name">Name</label>
         <InputGroup>
@@ -39,26 +77,10 @@ export default function LoginForm() {
           />
         </InputGroup>
       </div>
-      <GoogleAuthButton />
+      <GoogleAuthButton setLoading={setLoading} />
       <Button type="submit" variant="primary">
         Register
       </Button>
     </form>
   );
-}
-
-async function emailPaswordRegisterHandler(event) {
-  event.preventDefault();
-  const formElements = event.target.elements;
-  const data = {
-    displayName: formElements.name.value,
-    email: formElements.email_register.value,
-    password: formElements.password_register.value
-  }
-  const userObject = await createUserWithEmailAndPassword(data);
-  setDoc(`/users/${userObject.uid}`, {
-    displayName: data.displayName,
-    email: data.email,
-    uid: userObject.uid
-  });
 }

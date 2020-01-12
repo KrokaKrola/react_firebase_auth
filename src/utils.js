@@ -1,28 +1,36 @@
 import { auth, db } from "./firebase";
 
-export async function createUserWithEmailAndPassword(data) {
+export async function createUserWithEmailAndPassword({
+  displayName,
+  email,
+  password,
+  photoURL = "https://placekitten.com/200/200"
+}) {
   try {
-    let result = await auth().createUserWithEmailAndPassword(
-      data.email,
-      data.password
+    const { user } = await auth().createUserWithEmailAndPassword(
+      email,
+      password
     );
-    const { user } = result;
     await user.updateProfile({
-      displayName: data.displayName,
-      photoURL: data.photoURL
+      displayName,
+      photoURL
     });
-    return user;
+    await db.doc(`/users/${user.uid}`).set({
+      displayName: displayName,
+      email: email,
+      uid: user.uid
+    });
   } catch (error) {
     // Handle Errors here.
-    console.error(`Code: ${error.code}`, `Message: ${error.message}`);
+    throw new Error(error.message);
   }
 }
 
 export async function signInWithEmailAndPassword(data) {
   try {
-    return auth().signInWithEmailAndPassword(data.email, data.password);
+    return await auth().signInWithEmailAndPassword(data.email, data.password);
   } catch (error) {
-    console.error(`Code: ${error.code}`, `Message: ${error.message}`);
+    throw new Error(error.message);
   }
 }
 
@@ -40,14 +48,8 @@ export function onAuthStateChanged(callback) {
   });
 }
 
-export function setDoc(path, data) {
-  const document = db.doc(path);
-  document.get().then(doc => {
-    if (!doc.exists) {
-      document.set({ data }, { merge: true });
-      // console.log('set user into db');
-    }
-  });
+export async function setDoc(path, data) {
+  await db.doc(path).set({ data }, { merge: true });
 }
 
 export async function getDoc(path) {
@@ -55,4 +57,15 @@ export async function getDoc(path) {
   if (doc.exists) {
     return doc.data();
   }
+}
+
+export function uniqueId() {
+  return (
+    "_" +
+    (
+      Number(String(Math.random()).slice(2)) +
+      Date.now() +
+      Math.round(performance.now())
+    ).toString(36)
+  );
 }

@@ -1,11 +1,37 @@
-import React from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import { signInWithEmailAndPassword } from './../../utils';
+import React from "react";
+import { InputGroup, FormControl, Button } from "react-bootstrap";
+import { signInWithEmailAndPassword } from "./../../utils";
+import { useAppState } from "../../app-state";
 
 export default function LoginForm() {
+  const [{ errors }, dispatch] = useAppState();
+
+  async function emailPaswordLoginHandler(event) {
+    event.preventDefault();
+    const formElements = event.target.elements;
+    const data = {
+      email: formElements.email_login.value,
+      password: formElements.password_login.value
+    };
+
+    try {
+      await signInWithEmailAndPassword(data);
+    } catch (error) {
+      const newErrors = [
+        ...errors,
+        {
+          message: error.message
+        }
+      ];
+      dispatch({
+        type: "CHANGE_ERRORS_STATE",
+        errors: newErrors
+      });
+    }
+  }
 
   return (
-    <form onSubmit={emailPaswordLoginHandler} >
+    <form onSubmit={emailPaswordLoginHandler}>
       <div>
         <label htmlFor="email_login">Email</label>
         <InputGroup>
@@ -33,14 +59,4 @@ export default function LoginForm() {
       </Button>
     </form>
   );
-}
-
-function emailPaswordLoginHandler(event) {
-  event.preventDefault();
-  const formElements = event.target.elements;
-  const data = {
-    email: formElements.email_login.value,
-    password: formElements.password_login.value
-  };
-  signInWithEmailAndPassword(data);
 }
