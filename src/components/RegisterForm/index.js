@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
-import { createUserWithEmailAndPassword, setErrors } from "./../../utils";
-import GoogleAuthButton from "./components/GoogleAuthButton";
+import { createUserWithEmailAndPassword, setErrors, loadingStyle } from "./../../utils";
+import GoogleAuthButton from "./GoogleAuthButton";
 import { useAppState } from "../../app-state";
-
-const loadingStyle = {
-  pointerEvents: "none",
-  opacity: 0.5
-};
 
 const RegisterForm = () => {
   const [{ errors }, dispatch] = useAppState();

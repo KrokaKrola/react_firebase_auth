@@ -26,8 +26,7 @@ export async function googleAuthProvider() {
         displayName: user.displayName,
         email: user.email,
         uid: user.uid,
-        photoURL: user.photoURL,
-        topScore: 0
+        photoURL: user.photoURL
       });
     }
   } catch (error) {

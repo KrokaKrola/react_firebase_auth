@@ -1,5 +1,10 @@
 import { auth, db } from "./firebase";
 
+export const loadingStyle = {
+  pointerEvents: "none",
+  opacity: 0.5
+};
+
 export async function createUserWithEmailAndPassword({
   displayName,
   email,
@@ -19,8 +24,7 @@ export async function createUserWithEmailAndPassword({
       displayName: displayName,
       email: email,
       uid: user.uid,
-      photoURL: photoURL,
-      topScore: 0
+      photoURL: photoURL
     });
   } catch (error) {
     // Handle Errors here.

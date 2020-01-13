@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { googleAuthProvider } from "../../../../firebase";
-import { setErrors } from "../../../../utils";
-import googleSvg from "../../../../assets/google.svg";
-import { useAppState } from "../../../../app-state";
+import { googleAuthProvider } from "../../firebase";
+import { setErrors } from "../../utils";
+import googleSvg from "../../assets/google.svg";
+import { useAppState } from "../../app-state";
 
 const GoogleAuthButton = ({ setLoading }) => {
   const [{ errors }, dispatch] = useAppState();
